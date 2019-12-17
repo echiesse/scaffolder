@@ -12,7 +12,15 @@ operations = [
         ("reverse", cmd_reverse)
     ]
 
-cmd_scaffold args = withTextFile (head args) scaffold
+cmd_scaffold args = do
+    let inputFilePath = head args
+    let baseDir =
+            case tail args of
+                [] -> Nothing
+                (path:_) -> Just path
+    ensureDir baseDir
+    withTextFile inputFilePath (scaffold baseDir)
+
 cmd_prettyPrint args = withTextFile (head args) (pprint . parseDoc)
 cmd_reverse args = putStrLn "Not implemented"
 

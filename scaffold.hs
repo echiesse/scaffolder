@@ -29,12 +29,13 @@ pprintBuilder = DocBuilder{
 }
 
 traverseAST :: SfAST -> Int -> DocBuilder (IO ()) -> IO ()
-traverseAST [] level _ = noAction
-traverseAST (item: items) level docBuilder = do
+traverseAST ast level docBuilder = mapM_ (stepAST level docBuilder) ast
+
+stepAST :: Int -> DocBuilder (IO ()) -> SfItem -> IO ()
+stepAST level builder item = do
     case item of
-        (SfFile name) -> (buildFile docBuilder) item level
-        (SfDir name subitems) -> (buildDir docBuilder) item level
-    traverseAST items level docBuilder
+        (SfFile name) -> (buildFile builder) item level
+        (SfDir name subitems) -> (buildDir builder) item level
 
 pprint :: SfAST -> IO ()
 pprint doc = traverseAST doc 0 pprintBuilder
@@ -59,4 +60,9 @@ touch fileName = withFile fileName WriteMode (\handle -> return ())
 
 mkdir = createDirectory
 
-scaffold = scaffoldTree . parseDoc
+scaffold :: Maybe FilePath -> String -> IO ()
+scaffold baseDir input = cdBaseDir >> (scaffoldTree . parseDoc) input
+    where
+        cdBaseDir = case baseDir of
+            Nothing -> return ()
+            (Just path) -> setCurrentDirectory path
