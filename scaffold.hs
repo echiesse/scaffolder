@@ -5,18 +5,21 @@ module Scaffold where
 import System.IO
 import System.Directory
 
+import DocBuilder
 import SfAST
 import Parser
 
-type ParserAction = SfItem -> Int -> IO ()
 
 noAction = return ()
 
-type ItemBuilder a = SfItem -> Int -> a
-data DocBuilder a = DocBuilder {
-        buildFile :: ItemBuilder a,
-        buildDir :: ItemBuilder a
-    }
+makeIndent level = take (level * length indentation) $ cycle indentation
+
+touch fileName = withFile fileName WriteMode (\handle -> return ())
+
+mkdir = createDirectory
+
+pprint :: SfAST -> IO ()
+pprint doc = traverseAST doc 0 pprintBuilder
 
 pprintBuilder :: DocBuilder (IO ())
 pprintBuilder = DocBuilder{
@@ -28,17 +31,6 @@ pprintBuilder = DocBuilder{
             (item:items) -> traverseAST subitems (level + 1) pprintBuilder
 }
 
-traverseAST :: SfAST -> Int -> DocBuilder (IO ()) -> IO ()
-traverseAST ast level docBuilder = mapM_ (stepAST level docBuilder) ast
-
-stepAST :: Int -> DocBuilder (IO ()) -> SfItem -> IO ()
-stepAST level builder item = do
-    case item of
-        (SfFile name) -> (buildFile builder) item level
-        (SfDir name subitems) -> (buildDir builder) item level
-
-pprint :: SfAST -> IO ()
-pprint doc = traverseAST doc 0 pprintBuilder
 
 fsBuilder :: DocBuilder (IO ())
 fsBuilder = DocBuilder {
@@ -53,12 +45,10 @@ fsBuilder = DocBuilder {
                 setCurrentDirectory ".."
 }
 
+
 scaffoldTree :: SfAST -> IO()
 scaffoldTree doc = traverseAST doc 0 fsBuilder
 
-touch fileName = withFile fileName WriteMode (\handle -> return ())
-
-mkdir = createDirectory
 
 scaffold :: Maybe FilePath -> String -> IO ()
 scaffold baseDir input = cdBaseDir >> (scaffoldTree . parseDoc) input

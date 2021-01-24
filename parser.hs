@@ -8,8 +8,6 @@ import SfAST
 indentation = "    " -- <<<<< indentation não deve ser hardcoded
 commentChar = '#'
 
-makeIndent level = take (level * length indentation) $ cycle indentation
-
 removeComments :: [String] -> [String]
 removeComments ls = map stripComments $ filter (not . isCommentedLine) ls
 

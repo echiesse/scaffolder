@@ -20,7 +20,9 @@ Given a file `struct.txt` with tree structure described like this:
 ```
 Running the command
 
-```scaffolder run struct.txt```
+```
+scaffolder run struct.txt
+```
 
 Scaffolder will create the structure and placeholder files (empty files) under the current directory.
 
@@ -31,3 +33,15 @@ $> ghc --make scaffolder.hs
 ```
 Requires ghc >= 7.10.3
 
+# Future
+## Features
+    - Include sub template (`include` command)
+    - Definition of constants
+    - Per user persistent templates 
+        - Templates will be registered and called by name
+
+## Commands
+    - `scaffolder run <template-name>` - Create a dir struct based on a registered template
+    - `scaffolder template-register <template-name> <template-path>` - Register a new template
+    - `scaffolder template-list` - Lists existing templates
+    - `scaffolder template-show <template-name>` - Prints the specified template to the console.
