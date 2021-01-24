@@ -8,7 +8,7 @@ withTextFile fileName handler = withFile fileName ReadMode handleContents
     where
         handleContents handle = hGetContents handle >>= handler
 
-ensureDir :: Maybe FilePath -> IO ()
-ensureDir dir = case dir of
+maybeEnsureDir :: Maybe FilePath -> IO ()
+maybeEnsureDir dir = case dir of
     Nothing -> return ()
     (Just path) -> createDirectoryIfMissing True path

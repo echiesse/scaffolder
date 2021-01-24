@@ -4,7 +4,9 @@ module Scaffold where
 -- import Data.String.Utils
 import System.IO
 import System.Directory
+import System.FilePath
 
+import qualified Config
 import DocBuilder
 import SfAST
 import Parser
@@ -56,3 +58,11 @@ scaffold baseDir input = cdBaseDir >> (scaffoldTree . parseDoc) input
         cdBaseDir = case baseDir of
             Nothing -> return ()
             (Just path) -> setCurrentDirectory path
+
+
+ensureScaffolderDir :: IO FilePath
+ensureScaffolderDir = do
+    scaffolderDirPath <- getAppUserDataDirectory Config.dataDirName
+    createDirectoryIfMissing False scaffolderDirPath
+    createDirectoryIfMissing False $ joinPath [scaffolderDirPath, Config.templatesSubdir]
+    return scaffolderDirPath
