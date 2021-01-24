@@ -3,7 +3,7 @@ module Parser where
 import Data.List
 import Data.String.Utils
 
-import SfAST
+import ScaffoldTree
 
 indentation = "    " -- <<<<< indentation não deve ser hardcoded
 commentChar = '#'
@@ -14,10 +14,10 @@ removeComments ls = map stripComments $ filter (not . isCommentedLine) ls
 isCommentedLine line = strip line == "" || (head . strip) line == commentChar
 stripComments = takeWhile (/= commentChar)
 
-parseDoc :: String -> SfAST
+parseDoc :: String -> ScaffoldTree
 parseDoc content = fst $ parseDocLines ((removeComments . lines) content) 0
 
-parseDocLines :: [String] -> Int -> (SfAST, [String])
+parseDocLines :: [String] -> Int -> (ScaffoldTree, [String])
 parseDocLines (line:ls) prevLevel
     | prevLevel == currentLevel || prevLevel < currentLevel =  -- Calcular novo item e apendar na lista de items
         case parseItem (line:ls) of

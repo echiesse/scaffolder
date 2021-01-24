@@ -1,6 +1,6 @@
 module DocBuilder where
 
-import SfAST
+import ScaffoldTree
 
 type ItemBuilder a = SfItem -> Int -> a
 data DocBuilder a = DocBuilder {
@@ -8,7 +8,7 @@ data DocBuilder a = DocBuilder {
         buildDir :: ItemBuilder a
     }
 
-traverseAST :: SfAST -> Int -> DocBuilder (IO ()) -> IO ()
+traverseAST :: ScaffoldTree -> Int -> DocBuilder (IO ()) -> IO ()
 traverseAST ast level docBuilder = mapM_ (stepAST level docBuilder) ast
 
 

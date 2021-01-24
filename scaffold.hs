@@ -8,7 +8,7 @@ import System.FilePath
 
 import qualified Config
 import DocBuilder
-import SfAST
+import ScaffoldTree
 import Parser
 
 
@@ -20,7 +20,7 @@ touch fileName = withFile fileName WriteMode (\handle -> return ())
 
 mkdir = createDirectory
 
-pprint :: SfAST -> IO ()
+pprint :: ScaffoldTree -> IO ()
 pprint doc = traverseAST doc 0 pprintBuilder
 
 pprintBuilder :: DocBuilder (IO ())
@@ -48,7 +48,7 @@ fsBuilder = DocBuilder {
 }
 
 
-scaffoldTree :: SfAST -> IO()
+scaffoldTree :: ScaffoldTree -> IO()
 scaffoldTree doc = traverseAST doc 0 fsBuilder
 
 

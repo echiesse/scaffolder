@@ -1,8 +1,13 @@
-module SfAST where
+{-|
+Module      : ScaffoldTree
+Description : Provides the types to represent the abstract syntax tree (AST) of
+    the directory structure.
+-}
+module ScaffoldTree where
 
 data Token = Indent | Word String
 
-type SfAST = [SfItem]
+type ScaffoldTree = [SfItem]
 
 data SfItem =
     SfDir {
