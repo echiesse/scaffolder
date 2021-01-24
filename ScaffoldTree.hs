@@ -11,10 +11,10 @@ type ScaffoldTree = [SfItem]
 
 data SfItem =
     SfDir {
-        sfdocFolderName :: String,
-        sfdocFolderContents :: [SfItem]
+        sfDirName :: String,
+        sfDirContents :: [SfItem]
     }
-    | SfFile {sfdocFileName :: String}
+    | SfFile {sfFileName :: String}
 
     deriving (Eq)
 

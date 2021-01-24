@@ -21,16 +21,16 @@ touch fileName = withFile fileName WriteMode (\handle -> return ())
 mkdir = createDirectory
 
 pprint :: ScaffoldTree -> IO ()
-pprint doc = traverseAST doc 0 pprintBuilder
+pprint doc = traverseTree doc 0 pprintBuilder
 
 pprintBuilder :: DocBuilder (IO ())
-pprintBuilder = DocBuilder{
-    buildFile = \file level -> putStrLn $ makeIndent level ++ "- " ++ sfdocFileName file,
+pprintBuilder = DocBuilder {
+    buildFile = \file level -> putStrLn $ makeIndent level ++ "- " ++ sfFileName file,
     buildDir  = \(SfDir name subitems) level -> do
         putStrLn $ makeIndent level ++ "+ " ++ name
         case subitems of
             [] -> noAction
-            (item:items) -> traverseAST subitems (level + 1) pprintBuilder
+            (item:items) -> traverseTree subitems (level + 1) pprintBuilder
 }
 
 
@@ -48,8 +48,8 @@ fsBuilder = DocBuilder {
 }
 
 
-scaffoldTree :: ScaffoldTree -> IO()
-scaffoldTree doc = traverseAST doc 0 fsBuilder
+scaffoldTree :: ScaffoldTree -> IO ()
+scaffoldTree doc = traverseTree doc 0 fsBuilder
 
 
 scaffold :: Maybe FilePath -> String -> IO ()

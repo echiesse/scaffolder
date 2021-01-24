@@ -8,12 +8,12 @@ data DocBuilder a = DocBuilder {
         buildDir :: ItemBuilder a
     }
 
-traverseAST :: ScaffoldTree -> Int -> DocBuilder (IO ()) -> IO ()
-traverseAST ast level docBuilder = mapM_ (stepAST level docBuilder) ast
+traverseTree :: ScaffoldTree -> Int -> DocBuilder (IO ()) -> IO ()
+traverseTree tree level docBuilder = mapM_ (stepTree level docBuilder) tree
 
 
-stepAST :: Int -> DocBuilder (IO ()) -> SfItem -> IO ()
-stepAST level builder item = do
+stepTree :: Int -> DocBuilder (IO ()) -> SfItem -> IO ()
+stepTree level builder item = do
     case item of
         (SfFile name) -> (buildFile builder) item level
         (SfDir name subitems) -> (buildDir builder) item level

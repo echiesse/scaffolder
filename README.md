@@ -37,8 +37,11 @@ Requires ghc >= 7.10.3
 ## Features
     - Include sub template (`include` command)
     - Definition of constants
-    - Per user persistent templates 
+    - Per user persistent templates
         - Templates will be registered and called by name
+    - File templates
+    - Create scaffolding from an existing directory structure
+    - Read template from a zip file?
 
 ## Commands
     - `scaffolder run <template-name>` - Create a dir struct based on a registered template
