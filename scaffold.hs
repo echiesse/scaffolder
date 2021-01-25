@@ -7,7 +7,7 @@ import System.Directory
 import System.FilePath
 
 import qualified Config
-import DocBuilder
+import ScaffoldBuilder
 import ScaffoldTree
 import Parser
 
@@ -23,8 +23,8 @@ mkdir = createDirectory
 pprint :: ScaffoldTree -> IO ()
 pprint doc = traverseTree doc 0 pprintBuilder
 
-pprintBuilder :: DocBuilder (IO ())
-pprintBuilder = DocBuilder {
+pprintBuilder :: ScaffoldBuilder (IO ())
+pprintBuilder = ScaffoldBuilder {
     buildFile = \file level -> putStrLn $ makeIndent level ++ "- " ++ sfFileName file,
     buildDir  = \(SfDir name subitems) level -> do
         putStrLn $ makeIndent level ++ "+ " ++ name
@@ -34,8 +34,8 @@ pprintBuilder = DocBuilder {
 }
 
 
-fsBuilder :: DocBuilder (IO ())
-fsBuilder = DocBuilder {
+fsBuilder :: ScaffoldBuilder (IO ())
+fsBuilder = ScaffoldBuilder {
     buildFile = \(SfFile name) _ -> touch name,
     buildDir = \(SfDir name subitems) _ -> do
         mkdir name

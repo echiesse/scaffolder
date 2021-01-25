@@ -33,7 +33,14 @@ cmd_prettyPrint :: Command
 cmd_prettyPrint args = withTextFile (head args) (pprint . parseDoc)
 
 cmd_reverse :: Command
-cmd_reverse args = putStrLn "Not implemented"
+cmd_reverse args = do
+    case args of
+        (baseDir: _) -> undefined
+        -- (baseDir: _) -> do
+        --     let name = takeBaseName $ dropTrailingPathSeparator baseDir
+        --     tree <- traverseDir baseDir
+
+        _ -> undefined
 
 
 cmd_register :: Command
