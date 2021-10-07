@@ -21,23 +21,23 @@ touch fileName = withFile fileName WriteMode (\handle -> return ())
 mkdir = createDirectory
 
 pprint :: ScaffoldTree -> IO ()
-pprint doc = traverseTree doc 0 pprintBuilder
+pprint doc = traverseTree doc 0 pprintBuilder noAction
 
 pprintBuilder :: ScaffoldBuilder (IO ())
 pprintBuilder = ScaffoldBuilder {
-    buildFile = \file level -> putStrLn $ makeIndent level ++ "- " ++ sfFileName file,
-    buildDir  = \(SfDir name subitems) level -> do
+    buildFile = \file level _ -> putStrLn $ makeIndent level ++ "- " ++ sfFileName file,
+    buildDir  = \(SfDir name subitems) level _ -> do
         putStrLn $ makeIndent level ++ "+ " ++ name
         case subitems of
             [] -> noAction
-            (item:items) -> traverseTree subitems (level + 1) pprintBuilder
+            (item:items) -> traverseTree subitems (level + 1) pprintBuilder noAction
 }
 
 
 fsBuilder :: ScaffoldBuilder (IO ())
 fsBuilder = ScaffoldBuilder {
-    buildFile = \(SfFile name) _ -> touch name,
-    buildDir = \(SfDir name subitems) _ -> do
+    buildFile = \(SfFile name) _ _ -> touch name,
+    buildDir = \(SfDir name subitems) _ _ -> do
         mkdir name
         case subitems of
             [] -> noAction
@@ -49,7 +49,7 @@ fsBuilder = ScaffoldBuilder {
 
 
 scaffoldTree :: ScaffoldTree -> IO ()
-scaffoldTree doc = traverseTree doc 0 fsBuilder
+scaffoldTree doc = traverseTree doc 0 fsBuilder noAction
 
 
 scaffold :: Maybe FilePath -> String -> IO ()
@@ -66,3 +66,14 @@ ensureScaffolderDir = do
     createDirectoryIfMissing False scaffolderDirPath
     createDirectoryIfMissing False $ joinPath [scaffolderDirPath, Config.templatesSubdir]
     return scaffolderDirPath
+
+
+scaffoldToString :: ScaffoldTree -> String
+scaffoldToString tree = traverseTree tree 0 stringBuilder
+
+
+stringBuilder :: ScaffoldBuilder String
+stringBuilder = ScaffoldBuilder {
+    buildFile = \(SfFile name) level -> name,
+    buildDir = \(SfDir name subitems) level ->  name ++ "\n" ++ scaffoldToString subitems
+}
