@@ -14,6 +14,6 @@ main = do
         (operation:args) -> do
             case lookup operation commands of
                 Nothing -> putStrLn "Invalid operation"
-                Just handler -> handler args
+                Just command -> command args
 
 printUsage = putStrLn "Usage: scaffolder <operation> [args]"
