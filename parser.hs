@@ -1,9 +1,9 @@
 module Parser where
 
 import Data.List
-import Data.String.Utils
 
 import ScaffoldTree
+import Utils
 
 indentation = "    " -- <<<<< indentation não deve ser hardcoded
 commentChar = '#'
@@ -22,12 +22,12 @@ parseDocLines (line:ls) prevLevel
     | prevLevel == currentLevel || prevLevel < currentLevel =  -- Calcular novo item e apendar na lista de items
         case parseItem (line:ls) of
             Nothing -> parseDocLines ls prevLevel
-            Just (item, remainingLines) -> ((item:items), lastLines)
+            Just (item, remainingLines) -> (item:items, lastLines)
                 where
                     parsed = parseDocLines remainingLines currentLevel
                     items = fst parsed
                     lastLines = snd parsed
-    | otherwise = ([], (line:ls))
+    | otherwise = ([], line:ls)
     where
         currentLevel = countIndent indentation line
 parseDocLines [] prevLevel = ([], [])
@@ -53,4 +53,4 @@ countIndent indentation text
     | otherwise = 0
 
 detectIndent :: String -> Int
-detectIndent = length .(takeWhile (==' ')). head . lines
+detectIndent = length . takeWhile (==' ') . head . lines
