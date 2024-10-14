@@ -19,8 +19,8 @@ commands = [
         ("run", cmdScaffold),
         ("pprint", cmdPrettyPrint),
         ("reverse", cmdReverse),
-        ("register", cmdRegister),
-        ("list-templates", cmdListTemplates),
+        ("template-register", cmdRegister),
+        ("template-list", cmdListTemplates),
         ("template-unregister", cmdTemplateUnregister)
     ]
 
