@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Utils where
 
 import System.IO
@@ -13,5 +14,16 @@ maybeEnsureDir :: Maybe FilePath -> IO ()
 maybeEnsureDir dir = case dir of
     Nothing -> return ()
     (Just path) -> createDirectoryIfMissing True path
+
+
+class Show a => PrintList a where
+    printList :: [a] -> IO()
+    printList = foldr ((>>) . print) (return ())
+
+instance PrintList String where
+    printList = foldr ((>>) . putStrLn) (return ())
+
+instance PrintList Int where
+
 
 strip = T.unpack . T.strip . T.pack

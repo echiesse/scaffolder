@@ -1,5 +1,6 @@
 module Commands where
 
+import Data.List (sort)
 import System.Directory
 import System.Environment
 import System.FilePath
@@ -18,7 +19,8 @@ commands = [
         ("run", cmdScaffold),
         ("pprint", cmdPrettyPrint),
         ("reverse", cmdReverse),
-        ("register", cmdRegister)
+        ("register", cmdRegister),
+        ("list-templates", cmdListTemplates)
     ]
 
 cmdScaffold :: Command
@@ -51,6 +53,8 @@ cmdReverse args = do
         _ -> undefined
 
 
+-- Template commands:
+
 cmdRegister :: Command
 cmdRegister args = do
     case args of
@@ -63,3 +67,9 @@ cmdRegister args = do
             templateDestPath <- getTemplatePath templateName
             copyFile templatePath templateDestPath
         _ -> error "Not enough input data"
+
+
+cmdListTemplates :: Command
+cmdListTemplates args = do
+    files <- getTemplatesDirPath >>= listDirectory
+    printList $ sort files
