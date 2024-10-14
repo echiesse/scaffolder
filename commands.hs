@@ -20,7 +20,8 @@ commands = [
         ("pprint", cmdPrettyPrint),
         ("reverse", cmdReverse),
         ("register", cmdRegister),
-        ("list-templates", cmdListTemplates)
+        ("list-templates", cmdListTemplates),
+        ("template-unregister", cmdTemplateUnregister)
     ]
 
 cmdScaffold :: Command
@@ -73,3 +74,17 @@ cmdListTemplates :: Command
 cmdListTemplates args = do
     files <- getTemplatesDirPath >>= listDirectory
     printList $ sort files
+
+
+cmdTemplateUnregister :: Command
+cmdTemplateUnregister args = do
+    case args of
+        (templateName: _) -> do
+            templatePath <- getTemplatePath templateName
+            templateExists <- doesFileExist templatePath
+            if templateExists
+                then do
+                    removeFile templatePath
+                    putStrLn $ "Template removed: " ++ templateName
+                else putStrLn $ "Template not found: " ++ templateName
+        _ -> error "Missing template name. Try:\nscaffolder template-unregister <template-name>"
