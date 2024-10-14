@@ -13,14 +13,14 @@ import Utils
 type Command = [String] -> IO ()
 
 commands = [
-        ("run", cmd_scaffold),
-        ("pprint", cmd_prettyPrint),
-        ("reverse", cmd_reverse),
-        ("register", cmd_register)
+        ("run", cmdScaffold),
+        ("pprint", cmdPrettyPrint),
+        ("reverse", cmdReverse),
+        ("register", cmdRegister)
     ]
 
-cmd_scaffold :: Command
-cmd_scaffold args = do
+cmdScaffold :: Command
+cmdScaffold args = do
     let inputFilePath = head args
     let baseDir =
             case tail args of
@@ -29,11 +29,11 @@ cmd_scaffold args = do
     maybeEnsureDir baseDir
     withTextFile inputFilePath (scaffold baseDir)
 
-cmd_prettyPrint :: Command
-cmd_prettyPrint args = withTextFile (head args) (pprint . parseDoc)
+cmdPrettyPrint :: Command
+cmdPrettyPrint args = withTextFile (head args) (pprint . parseDoc)
 
-cmd_reverse :: Command
-cmd_reverse args = do
+cmdReverse :: Command
+cmdReverse args = do
     case args of
         (baseDir: _) -> undefined
         -- (baseDir: _) -> do
@@ -43,8 +43,8 @@ cmd_reverse args = do
         _ -> undefined
 
 
-cmd_register :: Command
-cmd_register args = do
+cmdRegister :: Command
+cmdRegister args = do
     case args of
         (templateName: templatePath: _) -> do
             -- Verificar se há template registrado com o nome atual
