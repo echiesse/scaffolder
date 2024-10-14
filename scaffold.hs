@@ -2,14 +2,17 @@ module Scaffold where
 
 -- import Data.List
 -- import Data.String.Utils
-import System.IO
 import System.Directory
+import System.Exit
 import System.FilePath
+import System.IO
 
 import qualified Config
+import FileSystem
+import Parser
 import ScaffoldBuilder
 import ScaffoldTree
-import Parser
+import Data.Maybe (fromMaybe)
 
 
 noAction = return ()
@@ -55,9 +58,19 @@ scaffoldTree doc = traverseTree doc 0 fsBuilder
 scaffold :: Maybe FilePath -> String -> IO ()
 scaffold baseDir input = cdBaseDir >> (scaffoldTree . parseDoc) input
     where
-        cdBaseDir = case baseDir of
-            Nothing -> return ()
-            (Just path) -> setCurrentDirectory path
+        cdBaseDir = do
+            let targetPath = fromMaybe "." baseDir
+            exitIfNotEmptyDir targetPath
+            setCurrentDirectory targetPath
+
+
+exitIfNotEmptyDir path = do
+    isEmpty <- isEmptyDir path
+    if not isEmpty
+        then do
+            putStrLn "Directory must be empty"
+            exitWith (ExitFailure 1)
+        else return ()
 
 
 ensureScaffolderDir :: IO FilePath

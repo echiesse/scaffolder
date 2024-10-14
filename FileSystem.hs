@@ -9,3 +9,8 @@ withCurrentDirectory path action = do
     res <- action
     setCurrentDirectory cwd
     return res
+
+
+isEmptyDir :: FilePath -> IO Bool
+isEmptyDir path = do
+    fmap null (listDirectory path)
