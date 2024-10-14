@@ -33,8 +33,9 @@ parseDocLines (line:ls) prevLevel
 parseDocLines [] prevLevel = ([], [])
 
 parseItem :: [String] -> Maybe (SfItem, [String])
+parseItem [] = Nothing
 parseItem (line:ls) =
-    case (strip line) of
+    case strip line of
         ('-' : name) -> Just (SfFile $ strip name, ls)
         ('+' : name) -> Just (SfDir (strip name) (fst parsed), snd parsed)
         _ -> Nothing
