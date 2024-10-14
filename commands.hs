@@ -60,7 +60,6 @@ cmdRegister args = do
                 -- Não havendo template,
                     -- Validar template sendo importado
                     -- Salvar template no repositório
-            scaffolderDirPath <- ensureScaffolderDir
             templateDestPath <- getTemplatePath templateName
             copyFile templatePath templateDestPath
         _ -> error "Not enough input data"
