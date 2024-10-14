@@ -9,6 +9,8 @@ import FileSystem
 import Parser
 import Scaffold
 import Utils
+import ProgramInfo
+import System.Exit
 
 type Command = [String] -> IO ()
 
@@ -21,13 +23,19 @@ commands = [
 
 cmdScaffold :: Command
 cmdScaffold args = do
-    let inputFilePath = head args
-    let baseDir =
-            case tail args of
-                [] -> Nothing
-                (path:_) -> Just path
-    maybeEnsureDir baseDir
-    withTextFile inputFilePath (scaffold baseDir)
+    let templateName = head args
+    maybeTemplatePath <- findTemplate templateName
+    case maybeTemplatePath of
+        Nothing -> do
+            putStrLn $ "Template not found " ++ templateName
+            exitWith (ExitFailure 1)
+        Just templatePath -> do
+            let baseDir =
+                    case tail args of
+                        [] -> Nothing
+                        (path:_) -> Just path
+            maybeEnsureDir baseDir
+            withTextFile templatePath (scaffold baseDir)
 
 cmdPrettyPrint :: Command
 cmdPrettyPrint args = withTextFile (head args) (pprint . parseDoc)
@@ -53,5 +61,6 @@ cmdRegister args = do
                     -- Validar template sendo importado
                     -- Salvar template no repositório
             scaffolderDirPath <- ensureScaffolderDir
-            copyFile templatePath $ joinPath [scaffolderDirPath, Config.templatesSubdir, templateName]
+            templateDestPath <- getTemplatePath templateName
+            copyFile templatePath templateDestPath
         _ -> error "Not enough input data"

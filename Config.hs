@@ -1,4 +1,4 @@
 module Config where
 
-dataDirName = "scaffolder"
+dataDirName = ".scaffolder"
 templatesSubdir = "templates"

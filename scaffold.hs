@@ -1,18 +1,16 @@
 module Scaffold where
 
--- import Data.List
--- import Data.String.Utils
+import Data.Maybe (fromMaybe)
 import System.Directory
 import System.Exit
 import System.FilePath
 import System.IO
 
-import qualified Config
 import FileSystem
 import Parser
+import ProgramInfo
 import ScaffoldBuilder
 import ScaffoldTree
-import Data.Maybe (fromMaybe)
 
 
 noAction = return ()
@@ -75,7 +73,10 @@ exitIfNotEmptyDir path = do
 
 ensureScaffolderDir :: IO FilePath
 ensureScaffolderDir = do
-    scaffolderDirPath <- getAppUserDataDirectory Config.dataDirName
+    scaffolderDirPath <- getAppDataPath
     createDirectoryIfMissing False scaffolderDirPath
-    createDirectoryIfMissing False $ joinPath [scaffolderDirPath, Config.templatesSubdir]
+
+    templatesPath <- getTemplatesDirPath
+    createDirectoryIfMissing False templatesPath
+    
     return scaffolderDirPath
