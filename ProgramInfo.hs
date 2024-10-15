@@ -4,7 +4,6 @@ import System.Directory
 import System.FilePath
 
 import qualified Config
-import Data.Graph (path)
 
 
 getAppDataPath :: IO FilePath

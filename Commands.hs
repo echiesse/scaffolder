@@ -7,6 +7,7 @@ import System.Exit
 import System.FilePath
 
 import qualified Config
+import DirTraverser
 import FileSystem
 import Parser
 import ProgramInfo
@@ -45,12 +46,11 @@ cmdPrettyPrint args = withTextFile (head args) (pprint . parseDoc)
 cmdReverse :: Command
 cmdReverse args = do
     case args of
-        (baseDir: _) -> undefined
-        -- (baseDir: _) -> do
-        --     let name = takeBaseName $ dropTrailingPathSeparator baseDir
-        --     tree <- traverseDir baseDir
+        (baseDir: _) -> do
+            tree <- traverseDir baseDir
+            pprint tree
 
-        _ -> undefined
+        _ -> die "Usage: scaffolder reverse <tree-path>"
 
 
 -- Template commands:
@@ -64,7 +64,7 @@ cmdRegister args = do
                 then die $ "Template named \"" ++ templateName ++ "\" already exists"
                 else registerTemplate templateName templatePath
 
-        _ -> error "Usage: scaffolder register <template-name> <template-file-path>"
+        _ -> die "Usage: scaffolder register <template-name> <template-file-path>"
 
 
 cmdListTemplates :: Command
@@ -84,4 +84,4 @@ cmdTemplateUnregister args = do
                     removeFile templatePath
                     putStrLn $ "Template removed: " ++ templateName
                 else putStrLn $ "Template not found: " ++ templateName
-        _ -> error "Missing template name. Try:\nscaffolder template-unregister <template-name>"
+        _ -> die "Missing template name. Try:\nscaffolder template-unregister <template-name>"
