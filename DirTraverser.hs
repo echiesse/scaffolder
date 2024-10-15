@@ -6,7 +6,7 @@ import System.FilePath
 
 
 traverseDir :: FilePath -> IO ScaffoldTree
-traverseDir path = listDirectory path >>= traverseDirContents path
+traverseDir path = fmap reverse $ listDirectory path >>= traverseDirContents path
 
 traverseDirContents :: FilePath -> [FilePath] -> IO ScaffoldTree
 traverseDirContents _ [] = return []
