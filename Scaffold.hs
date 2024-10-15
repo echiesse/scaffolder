@@ -1,5 +1,6 @@
 module Scaffold where
 
+import qualified Control.Monad
 import Data.Maybe (fromMaybe)
 import System.Directory
 import System.Exit
@@ -64,11 +65,7 @@ scaffold baseDir input = cdBaseDir >> (scaffoldTree . parseDoc) input
 
 exitIfNotEmptyDir path = do
     isEmpty <- isEmptyDir path
-    if not isEmpty
-        then do
-            putStrLn "Directory must be empty"
-            exitWith (ExitFailure 1)
-        else return ()
+    Control.Monad.unless isEmpty $ die "Directory must be empty"
 
 
 ensureScaffolderDir :: IO FilePath
@@ -78,5 +75,5 @@ ensureScaffolderDir = do
 
     templatesPath <- getTemplatesDirPath
     createDirectoryIfMissing False templatesPath
-    
+
     return scaffolderDirPath

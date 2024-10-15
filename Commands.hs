@@ -3,15 +3,16 @@ module Commands where
 import Data.List (sort)
 import System.Directory
 import System.Environment
+import System.Exit
 import System.FilePath
 
 import qualified Config
 import FileSystem
 import Parser
-import Scaffold
-import Utils
 import ProgramInfo
-import System.Exit
+import Scaffold
+import TemplateManager
+import Utils
 
 type Command = [String] -> IO ()
 
@@ -29,9 +30,7 @@ cmdScaffold args = do
     let templateName = head args
     maybeTemplatePath <- findTemplate templateName
     case maybeTemplatePath of
-        Nothing -> do
-            putStrLn $ "Template not found " ++ templateName
-            exitWith (ExitFailure 1)
+        Nothing -> die $ "Template not found " ++ templateName
         Just templatePath -> do
             let baseDir =
                     case tail args of
@@ -60,14 +59,12 @@ cmdRegister :: Command
 cmdRegister args = do
     case args of
         (templateName: templatePath: _) -> do
-            -- Verificar se há template registrado com o nome atual
-                -- Se houver, confirmar substituição ou exigir que primeiro o existente seja apagado
-                -- Não havendo template,
-                    -- Validar template sendo importado
-                    -- Salvar template no repositório
-            templateDestPath <- getTemplatePath templateName
-            copyFile templatePath templateDestPath
-        _ -> error "Not enough input data"
+            templateExists <- doesTemplateExist templateName
+            if templateExists
+                then die $ "Template named \"" ++ templateName ++ "\" already exists"
+                else registerTemplate templateName templatePath
+
+        _ -> error "Usage: scaffolder register <template-name> <template-file-path>"
 
 
 cmdListTemplates :: Command
