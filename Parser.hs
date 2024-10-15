@@ -54,4 +54,12 @@ countIndent indentation text
     | otherwise = 0
 
 detectIndent :: String -> Int
-detectIndent = length . takeWhile (==' ') . head . lines
+detectIndent text = detectIndent' $ lines text
+    where
+        detectIndent' [] = 0
+        detectIndent' (l:ls) =
+            if indentationLength > 0
+                then indentationLength
+                else detectIndent' ls
+            where
+                indentationLength = length . takeWhile (==' ') $ l
