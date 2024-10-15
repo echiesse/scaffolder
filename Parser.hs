@@ -8,14 +8,19 @@ import Utils
 indentation = "    " -- <<<<< indentation não deve ser hardcoded
 commentChar = '#'
 
+
 removeComments :: [String] -> [String]
 removeComments ls = map stripComments $ filter (not . isCommentedLine) ls
 
+
 isCommentedLine line = strip line == "" || (head . strip) line == commentChar
+
 stripComments = takeWhile (/= commentChar)
+
 
 parseDoc :: String -> ScaffoldTree
 parseDoc content = fst $ parseDocLines ((removeComments . lines) content) 0
+
 
 parseDocLines :: [String] -> Int -> (ScaffoldTree, [String])
 parseDocLines (line:ls) prevLevel
@@ -31,6 +36,7 @@ parseDocLines (line:ls) prevLevel
     where
         currentLevel = countIndent indentation line
 parseDocLines [] prevLevel = ([], [])
+
 
 parseItem :: [String] -> Maybe (SfItem, [String])
 parseItem [] = Nothing
@@ -52,6 +58,7 @@ countIndent indentation text
     | indentation `isPrefixOf` text =
         1 + countIndent indentation (drop (length indentation) text)
     | otherwise = 0
+
 
 detectIndent :: String -> Int
 detectIndent text = detectIndent' $ lines text
