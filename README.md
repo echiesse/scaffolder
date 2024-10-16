@@ -2,7 +2,7 @@
 A general purpose scaffolder
 
 # Overview
-The goal here is to be able to build a directory structure (with some empty files if needed) in order to maintain structure consistency over parts of a project or among projects of the same type.
+Scaffolder is general purpose scaffold generator. It takes a file description of a directory tree and creates that tree in the user's file system. If file names are provided, the files are created empty.
 
 # Availability
 
@@ -12,7 +12,7 @@ Scaffolder has been developed and tested in Windows 10/11, but there should be n
 
 Pre compiled binaries and installers are not available at the moment, so the recommended way to install it is to build the project from source locally. Check the build instructions further down in this document.
 
-After building the software, copy the generated `scaffolder.exe` (or `scaffolder`) to `%HOME%\bin` (`$HOME/bin` on Linux) and configure this folder to be in the executables search path of your platform (most Linuxes will already have it). Of course, if you prefer a different location go ahead and do it. Just make it is in your `PATH`.
+After building the software, copy the generated `scaffolder.exe` (or `scaffolder`) to `%HOME%\bin` (`$HOME/bin` on Linux) and configure this folder to be in the executables search path of your platform (most Linuxes will already have it). Of course, if you prefer a different location go ahead and do it. Just make sure it is in your `PATH`.
 
 # Usage
 ## Straight to the Point
