@@ -19,10 +19,11 @@ type Command = [String] -> IO ()
 
 commands = [
         ("run", cmdScaffold),
-        ("pprint", cmdPrettyPrint),
         ("reverse", cmdReverse),
-        ("template-register", cmdRegister),
         ("template-list", cmdListTemplates),
+        ("template-pprint", cmdTemplatePrettyPrint),
+        ("template-register", cmdRegister),
+        ("template-show", cmdTemplateShow),
         ("template-unregister", cmdTemplateUnregister)
     ]
 
@@ -40,8 +41,6 @@ cmdScaffold args = do
             maybeEnsureDir baseDir
             withTextFile templatePath (scaffold baseDir)
 
-cmdPrettyPrint :: Command
-cmdPrettyPrint args = withTextFile (head args) (pprint . parseDoc)
 
 cmdReverse :: Command
 cmdReverse args = do
@@ -67,12 +66,6 @@ cmdRegister args = do
         _ -> die "Usage: scaffolder register <template-name> <template-file-path>"
 
 
-cmdListTemplates :: Command
-cmdListTemplates args = do
-    files <- getTemplatesDirPath >>= listDirectory
-    printList $ sort files
-
-
 cmdTemplateUnregister :: Command
 cmdTemplateUnregister args = do
     case args of
@@ -85,3 +78,21 @@ cmdTemplateUnregister args = do
                     putStrLn $ "Template removed: " ++ templateName
                 else putStrLn $ "Template not found: " ++ templateName
         _ -> die "Missing template name. Try:\nscaffolder template-unregister <template-name>"
+
+
+cmdListTemplates :: Command
+cmdListTemplates args = do
+    files <- getTemplatesDirPath >>= listDirectory
+    printList $ sort files
+
+
+cmdTemplatePrettyPrint :: Command
+cmdTemplatePrettyPrint args = do
+    templatePath <- getTemplatePath $ head args
+    withTextFile templatePath (pprint . parseDoc)
+
+
+cmdTemplateShow :: Command
+cmdTemplateShow args = do
+    templatePath <- getTemplatePath $ head args
+    withTextFile templatePath putStrLn
